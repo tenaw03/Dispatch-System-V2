@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title> Incident-Reporting-Archiving-App </title>
+    <!-- <link href="app.css" rel="stylesheet" type="text/css"> -->
+  </head>
+  <body>
+    <h1>Enter Your Username: </h1>
+        <!-- display geolocation -->
+      <div style="position: fixed; top: 0; right: 0;padding: 10px; display: flex; gap:30px;">
+          <p id="lat" style="color: green;"></p>
+          <p id="lng" style="color: green;"></p>
+          <p id="locationError" style="color: red"></p>
+      </div>
+    <form id="registration">
+      <label for="name">Username</label>
+      <input type="text" id="name" />
+      <input type="submit" />
+    </form>
+
+    <!-- geolocation script -->
+    <script>
+      const errorDiv = document.getElementById("locationError");
+      const lat = document.getElementById("lat");
+      const lng = document.getElementById("lng");
+      var longitude;
+      var latitude;
+      if(navigator.geolocation){
+        const onSuccess = (position)=>{
+          longitude = position.coords.longitude;
+          latitude = position.coords.latitude;
+          lng.innerText="Longitude: "+position.coords.longitude;
+          lat.innerHTML="Latitude: "+position.coords.latitude;
+        }
+        const onError = (error)=>{
+          errorDiv.innerHTML="Some error happened";
+        }
+        navigator.geolocation.getCurrentPosition(onSuccess, onError);
+      }else{
+        errorDiv.innerText="Error: Geolocation is not supported by this browser";
+      }
+    </script>
+
+
+    <script>
+      const form = document.getElementById('registration');
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        location.pathname = '/session/' + form.elements.name.value+'/'+latitude+'/'+longitude;
+      });
+   </script>
+  </body>
+</html>

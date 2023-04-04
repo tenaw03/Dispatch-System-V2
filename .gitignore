@@ -1,0 +1,5 @@
+# making sure that ignoring sensentive data from the repository
+package-lock.json
+# ignoring just the dot env file becuse of my privacy
+.env
+node_modules/*

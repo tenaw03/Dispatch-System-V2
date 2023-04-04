@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="session.css" />
+    <title> Incident-Reporting-Archiving-App </title>
+  </head>
+
+  <script src="https://static.opentok.com/v2/js/opentok.min.js"></script>
+  <body>
+              <div id="streams">
+                <div id="publisher" class="focus"></div>
+                <p id="subscriberID"></p>
+                <p id="publisherID"></p>
+              </p>
+
+      <div class="button-grouper">
+<br><br>
+        <button
+          onclick="publishAudioOnly()"
+          id="button"
+          class="btn btn-danger start"
+          style="border-radius: 5px; box-shadow: 0 9px rgb(112, 107, 107)"
+        >
+          Make Audio OR Video
+        </button>
+      </div>
+    </div>
+    <!-- <script src="/js/host.js"></script> -->
+    <script
+      type="text/javascript"
+      src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.0/js/bootstrap.min.js"
+    ></script>
+
+    <script>
+
+console.log(location.pathname);
+
+        // setting here all active sessions
+      let sessions = {};
+      let publisher;
+      let session;
+
+      let publishMyVideoFootage = true;
+      var pubVideoOptions = { publishAudio: true, publishVideo: true };
+      var subscriberLayout = { insertMode: "append", width: "100%", height: "100%"};
+      // const initializePublisherModule = () => {
+        console.log(location.pathname);
+
+        // make call the API through the url 'location.pathname'
+        fetch(location.pathname, { method: "POST" })
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (data) {
+            console.log(data);
+   
+            // sessionId = data.sessionId;
+            session = OT.initSession(data.apiKey, data.sessionId);
+            // console.log(session);
+            let name = location.pathname;
+            sessions[name] = session.sessionId;
+
+            // function videoStreaming() {
+            publisher = OT.initPublisher("publisherID", pubVideoOptions);
+            session.connect(data.token, function () {
+              session.publish(publisher);
+            });
+
+            // Session listening for the events
+            session.on("streamCreated", function (event) {
+              session.subscribe(event.stream, "subscriberID", {
+                insertMode: "append",
+                width: "100px",
+                height: "100px",
+              });
+            });
+          });
+
+     
+      const publishAudioOnly = () => {
+        if (publishMyVideoFootage) {
+          publishMyVideoFootage = false;
+          publisher.publishVideo(false);
+        } else {
+          publishMyVideoFootage = true;
+          publisher.publishVideo(true);
+        }
+      };
+    </script>
+  </body>
